@@ -11,9 +11,11 @@ export function App() {
 
   return (
     <>
-      <h1 className="text-center py-4 ">Menu</h1>
+      <h1 className="text-center my-6">OCLC Restaurant Menu</h1>
       <form className="text-center">
-        <label htmlFor="search">Search</label>{" "}
+        <label htmlFor="search" className="mr-4">
+          Search
+        </label>
         <input
           id="search"
           className="border p-1 border-gray-400"
@@ -22,13 +24,20 @@ export function App() {
           onChange={(e) => setSearch(e.target.value)}
         />
       </form>
-      <div className="flex flex-wrap px-5 py-5">
+      <div className="flex flex-wrap pt-10">
         {matchingFoods.map((food) => (
           <Card key={food.id}>
-            <h3 className="font-bold mb-4">{food.name}</h3>
-            <div className="italic mb-4">{food.description}</div>
-            <div className="mb-4">${food.price}</div>
-            <div className="text-sm">{food.tags.join(", ")}</div>
+            <img
+              src={food.image}
+              style={{ maxHeight: 150, objectFit: "cover" }}
+              className="rounded-t-lg"
+            />
+            <h3 className="font-bold my-2">{food.name}</h3>
+            <div className="italic my-2">{food.description}</div>
+            <div className="mt-2 mb-4 text-right">${food.price}</div>
+            <div className="flex grow justify-center items-end text-xs">
+              Available for: {food.tags.join(", ")}
+            </div>
           </Card>
         ))}
       </div>
