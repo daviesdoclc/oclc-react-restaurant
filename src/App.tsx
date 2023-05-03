@@ -18,6 +18,7 @@ export function App() {
         <Routes>
           <Route path="/" element={<Menu />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<h1>Page not found</h1>} />
         </Routes>
       </main>
     </>

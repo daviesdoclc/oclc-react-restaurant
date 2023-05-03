@@ -44,7 +44,7 @@ export function Menu() {
 
   return (
     <>
-      <h1 className="text-center my-6 mb-10">WorldCat Menu</h1>
+      <h1 className="text-center my-3">WorldCat Menu</h1>
       <form className="text-center">
         <label htmlFor="search" className="mr-4">
           Search
@@ -57,9 +57,8 @@ export function Menu() {
           onChange={(e) => setSearch(e.target.value)}
         />
       </form>
-      <h2 className="text-center py-3">Filter ({search})</h2>
       <section className="flex flex-wrap justify-center">
-        {loading ? <CircularProgress /> : renderSection()}
+        {loading ? <CircularProgress className="mt-20" /> : renderSection()}
       </section>
     </>
   );
