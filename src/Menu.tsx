@@ -1,4 +1,3 @@
-import { Food } from "./types/food";
 import { Card } from "./shared/Card";
 import { useState } from "react";
 import { getFoods, deleteFood } from "./services/foods.service";
