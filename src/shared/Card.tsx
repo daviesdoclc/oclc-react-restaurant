@@ -12,7 +12,7 @@ export function Card(props: CardProps) {
     <div
       className={clsx(
         props.className,
-        "flex flex-col rounded-lg bg-slate-800 border-solid border-2 border-gray-500"
+        "flex flex-col rounded-lg bg-slate-50 border-solid border-2 border-black"
       )}
       style={props.style}
     >

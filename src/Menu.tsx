@@ -1,22 +1,30 @@
 import { Food } from "./types/food";
 import { Card } from "./shared/Card";
-import { useEffect, useState } from "react";
-import { getFoods } from "./services/foods.service";
-import { CircularProgress } from "@mui/material";
+import { useState } from "react";
+import { getFoods, deleteFood } from "./services/foods.service";
+import { Button, CircularProgress } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
+import { useUserContext } from "./context/UserContext";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function Menu() {
   const [search, setSearch] = useState("");
-  const [foods, setFoods] = useState<Food[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchFoods() {
-      const resp = await getFoods();
-      setFoods(resp);
-      setLoading(false);
-    }
-    fetchFoods();
-  }, []);
+  const { user } = useUserContext();
+  const queryClient = useQueryClient();
+
+  const { data: foods = [], isLoading } = useQuery({
+    queryKey: ["foods"],
+    queryFn: getFoods,
+  });
+
+  const deleteFoodMutation = useMutation({
+    mutationFn: deleteFood,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["foods"] });
+      enqueueSnackbar("Removed food!", { variant: "success" });
+    },
+  });
 
   const matchingFoods = foods.filter((food) =>
     food.name.toLowerCase().includes(search)
@@ -26,7 +34,7 @@ export function Menu() {
     return matchingFoods.map((food) => (
       <Card key={food.id} className="m-4 w-96">
         <img
-          src={`/images/${food.image}`}
+          src={`/images/${food.image || "default.jpg"}`}
           style={{ maxHeight: 150, objectFit: "cover" }}
           className="opacity-80"
         />
@@ -38,13 +46,22 @@ export function Menu() {
             {food.tags.join(", ")}
           </div>
         </div>
+        <Button
+          aria-label={`Delete ${food.name}`}
+          onClick={() => {
+            deleteFoodMutation.mutate(food.id);
+          }}
+        >
+          Delete
+        </Button>
       </Card>
     ));
   }
 
   return (
     <>
-      <h1 className="text-center my-3">WorldCat Menu</h1>
+      <h1 className="text-center my-3 text-3xl">WorldCat Menu</h1>
+      {user && <p className="text-center my-3">Welcome, {user.name}!</p>}
       <form className="text-center">
         <label htmlFor="search" className="mr-4">
           Search
@@ -58,7 +75,7 @@ export function Menu() {
         />
       </form>
       <section className="flex flex-wrap justify-center">
-        {loading ? <CircularProgress className="mt-20" /> : renderSection()}
+        {isLoading ? <CircularProgress className="mt-20" /> : renderSection()}
       </section>
     </>
   );
